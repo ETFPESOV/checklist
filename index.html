@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Dashboard EDAM</title>
+
+<style>
+
+body{
+font-family:Arial;
+padding:20px;
+background:#f4f6f9;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+}
+
+th,td{
+padding:10px;
+border:1px solid #ddd;
+text-align:center;
+}
+
+input,textarea{
+width:95%;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Dashboard EDAM</h1>
+
+<button onclick="agregarFila()">+ Nueva Tarea</button>
+
+<br><br>
+
+<table id="tabla">
+
+<tr>
+<th>Completado</th>
+<th>Tarea</th>
+<th>Responsable</th>
+<th>Inicio</th>
+<th>Fin</th>
+<th>% Avance</th>
+<th>Semáforo</th>
+<th>Notas</th>
+</tr>
+
+</table>
+
+<script>
+
+function agregarFila(){
+
+const tabla=document.getElementById("tabla");
+
+const fila=tabla.insertRow();
+
+fila.innerHTML=`
+
+<td><input type="checkbox" onchange="actualizar(this)"></td>
+
+<td><input type="text"></td>
+
+<td><input type="text"></td>
+
+<td><input type="date"></td>
+
+<td><input type="date"></td>
+
+<td><input type="number" min="0" max="100" value="0" oninput="actualizar(this)"></td>
+
+<td class="semaforo">🔴</td>
+
+<td><textarea rows="2"></textarea></td>
+
+`;
+
+guardar();
+
+}
+
+function actualizar(elem){
+
+const fila=elem.parentElement.parentElement;
+
+const check=fila.cells[0].querySelector("input");
+
+const avance=fila.cells[5].querySelector("input");
+
+const semaforo=fila.cells[6];
+
+if(check.checked){
+
+avance.value=100;
+
+}
+
+let valor=parseInt(avance.value);
+
+if(valor < 50){
+
+semaforo.innerHTML="🔴";
+
+}
+else if(valor < 80){
+
+semaforo.innerHTML="🟠";
+
+}
+else{
+
+semaforo.innerHTML="🟢";
+
+}
+
+guardar();
+
+}
+
+function guardar(){
+
+localStorage.setItem(
+"tablero",
+document.getElementById("tabla").innerHTML
+);
+
+}
+
+window.onload=function(){
+
+let data=localStorage.getItem("tablero");
+
+if(data){
+
+document.getElementById("tabla").innerHTML=data;
+
+}
+
+}
+
+document.addEventListener("change",guardar);
+
+document.addEventListener("keyup",guardar);
+
+</script>
+
+</body>
+</html>
